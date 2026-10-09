@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora: ¿Cuánto perdiste de Bono FTTX?</title>
-  <!-- Tailwind CSS para el diseño -->
+  <title>Calculadora: Bono FTTX a Mercantil</title>
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Iconos Lucide -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -19,7 +19,7 @@
         <i data-lucide="trending-down" class="w-8 h-8"></i>
       </div>
       <h1 class="text-2xl font-bold tracking-tight text-white">¿Cuánto perdiste de Bono?</h1>
-      <p class="text-xs text-slate-400 mt-1">Cálculo de devaluación - Bono FTTX</p>
+      <p class="text-xs text-slate-400 mt-1">Bono FTTX y Retiro a Mercantil</p>
     </div>
 
     <!-- Comparativa de Tasas -->
@@ -37,49 +37,79 @@
     </div>
 
     <!-- Formulario -->
-    <div class="space-y-4 mb-6">
-      <div>
-        <label for="montoBs" class="block text-xs font-medium text-slate-300 mb-1.5">
-          Monto que recibiste en Bolívares (Bs.):
-        </label>
-        <div class="relative">
-          <input 
-            type="number" 
-            id="montoBs" 
-            placeholder="Ej: 85900" 
-            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-            oninput="calcularPerdida()"
-          >
-          <span class="absolute right-4 top-3 text-slate-500 text-sm font-semibold">Bs.</span>
-        </div>
+    <div class="mb-6">
+      <label for="montoBs" class="block text-xs font-medium text-slate-300 mb-1.5">
+        Monto total recibido en Todoticket (Bs.):
+      </label>
+      <div class="relative">
+        <input 
+          type="number" 
+          id="montoBs" 
+          placeholder="Ej: 8590.63" 
+          step="any"
+          class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+          oninput="calcularTodo()"
+        >
+        <span class="absolute right-4 top-3 text-slate-500 text-sm font-semibold">Bs.</span>
       </div>
     </div>
 
     <!-- Resultados -->
-    <div id="resultados" class="hidden space-y-4">
+    <div id="resultados" class="hidden space-y-5">
       
-      <div class="border-t border-slate-700/60 pt-4 space-y-2">
-        <div class="flex justify-between text-sm">
-          <span class="text-slate-400">Era equivalente a:</span>
-          <span id="usdOriginal" class="font-semibold text-slate-200">$0.00</span>
+      <!-- PÉRDIDA POR DEVALUACIÓN -->
+      <div>
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Impacto Inflacionario</h3>
+        <div class="bg-slate-900/40 border border-slate-700/50 rounded-xl p-3 space-y-2">
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-400">Aprobado en:</span>
+            <span id="usdOriginal" class="font-semibold text-slate-200">$0.00</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-slate-400">Equivalente hoy:</span>
+            <span id="usdActual" class="font-semibold text-slate-200">$0.00</span>
+          </div>
         </div>
-        <div class="flex justify-between text-sm">
-          <span class="text-slate-400">Hoy equivale a:</span>
-          <span id="usdActual" class="font-semibold text-slate-200">$0.00</span>
+
+        <!-- Tarjeta Pérdida -->
+        <div class="bg-red-950/40 border border-red-500/30 rounded-xl p-3 text-center mt-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-red-400 block mb-0.5">
+            Pérdida en Dólares
+          </span>
+          <div class="text-2xl font-black text-red-500" id="diferenciaUsd">-$0.00</div>
+          <span id="porcentajePerdida" class="text-xs text-red-300 font-medium">0% menos</span>
         </div>
       </div>
 
-      <!-- Tarjeta de Pérdida -->
-      <div class="bg-red-950/40 border border-red-500/30 rounded-xl p-4 text-center">
-        <span class="text-xs font-semibold uppercase tracking-wider text-red-400 block mb-1">
-          Pérdida Total
-        </span>
-        <div class="text-3xl font-black text-red-500 mb-1" id="diferenciaUsd">
-          -$0.00
+      <!-- RETIRO TODOTICKET A MERCANTIL -->
+      <div>
+        <div class="flex items-center gap-1.5 mb-2">
+          <i data-lucide="arrow-left-right" class="w-4 h-4 text-blue-400"></i>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-blue-400">Paso a Banco Mercantil (0.6% Com.)</h3>
         </div>
-        <span id="porcentajePerdida" class="text-xs bg-red-500/20 text-red-300 px-2.5 py-0.5 rounded-full inline-block font-medium">
-          -0%
-        </span>
+
+        <div class="bg-blue-950/30 border border-blue-500/30 rounded-xl p-4 space-y-3">
+          <div>
+            <div class="flex justify-between items-baseline">
+              <span class="text-xs text-slate-300">Debes colocar en Todoticket:</span>
+              <span id="montoColocar" class="text-base font-bold text-white">0,00 Bs.</span>
+            </div>
+            <p class="text-[10px] text-slate-400">Monto máximo para no dar saldo insuficiente</p>
+          </div>
+
+          <div class="border-t border-slate-700/60 pt-2 flex justify-between text-xs">
+            <span class="text-slate-400">Comisión cobrada (0.6%):</span>
+            <span id="comisionCobrada" class="font-semibold text-amber-400">0,00 Bs.</span>
+          </div>
+
+          <div class="border-t border-slate-700/60 pt-2 flex justify-between items-center">
+            <span class="text-xs font-medium text-emerald-400">Te caerá en Mercantil:</span>
+            <div class="text-right">
+              <span id="netoMercantil" class="text-sm font-bold text-emerald-400 block">0,00 Bs.</span>
+              <span id="netoMercantilUSD" class="text-[11px] text-slate-400 block">≈ $0.00</span>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -87,13 +117,16 @@
   </div>
 
   <script>
-    // Inicializar iconos
     lucide.createIcons();
 
-    const TASA_FIJA = 859.0629;
+    const TASA_FIJA = 859.0629; // Tasa base del bono FTTX
+    const COMISION = 0.006;    // 0.6% (6 Bs por cada 1000 Bs)
     let tasaBCVActual = 0;
 
-    // 1. Obtener la tasa actual del BCV usando DolarApi
+    // Formateadores
+    const formatoUSD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+    const formatoBS = new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
     async function obtenerTasaBCV() {
       try {
         const res = await fetch("https://ve.dolarapi.com/v1/dolares/oficial");
@@ -101,8 +134,8 @@
         
         if (data && data.promedio) {
           tasaBCVActual = parseFloat(data.promedio);
-          document.getElementById('tasaBCVTexto').innerText = `Bs. ${tasaBCVActual.toFixed(2)}`;
-          calcularPerdida(); // Si el usuario ya escribió algo, calcula
+          document.getElementById('tasaBCVTexto').innerText = `Bs. ${formatoBS.format(tasaBCVActual)}`;
+          calcularTodo();
         }
       } catch (error) {
         document.getElementById('tasaBCVTexto').innerHTML = `<span class="text-red-400">Error</span>`;
@@ -110,42 +143,43 @@
       }
     }
 
-    // 2. Función de cálculo en tiempo real
-    function calcularPerdida() {
+    function calcularTodo() {
       const input = document.getElementById('montoBs').value;
       const montoBs = parseFloat(input);
       const contenedorResultados = document.getElementById('resultados');
 
-      // Validar que haya un monto válido y la tasa esté cargada
       if (isNaN(montoBs) || montoBs <= 0 || tasaBCVActual === 0) {
         contenedorResultados.classList.add('hidden');
         return;
       }
 
-      // Cálculos
+      // 1. Cálculos de Devaluación
       const usdOriginal = montoBs / TASA_FIJA;
       const usdActual = montoBs / tasaBCVActual;
       const perdidaUsd = usdOriginal - usdActual;
       const porcentaje = ((perdidaUsd / usdOriginal) * 100);
 
-      // Formateador de moneda en USD
-      const formatoUSD = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2
-      });
+      // 2. Cálculos Retiro Todoticket -> Mercantil
+      // Redondeamos hacia abajo los céntimos para evitar que rechace por exceder 0.01 Bs
+      const maximoRetiro = Math.floor((montoBs / (1 + COMISION)) * 100) / 100;
+      const comisionBs = montoBs - maximoRetiro;
+      const netoUSD = maximoRetiro / tasaBCVActual;
 
-      // Actualizar interfaz
+      // Actualizar DOM Devaluación
       document.getElementById('usdOriginal').innerText = formatoUSD.format(usdOriginal);
       document.getElementById('usdActual').innerText = formatoUSD.format(usdActual);
       document.getElementById('diferenciaUsd').innerText = `-${formatoUSD.format(perdidaUsd)}`;
-      document.getElementById('porcentajePerdida').innerText = `Has perdido el ${porcentaje.toFixed(2)}% del valor`;
+      document.getElementById('porcentajePerdida').innerText = `Has perdido un ${porcentaje.toFixed(2)}% del poder de compra`;
 
-      // Mostrar contenedor
+      // Actualizar DOM Todoticket / Mercantil
+      document.getElementById('montoColocar').innerText = `${formatoBS.format(maximoRetiro)} Bs.`;
+      document.getElementById('comisionCobrada').innerText = `${formatoBS.format(comisionBs)} Bs.`;
+      document.getElementById('netoMercantil').innerText = `${formatoBS.format(maximoRetiro)} Bs.`;
+      document.getElementById('netoMercantilUSD').innerText = `≈ ${formatoUSD.format(netoUSD)}`;
+
       contenedorResultados.classList.remove('hidden');
     }
 
-    // Ejecutar al cargar la página
     obtenerTasaBCV();
   </script>
 </body>
