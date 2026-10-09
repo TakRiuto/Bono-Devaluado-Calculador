@@ -3,11 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora: ¿Cuánto perdiste de Bono FTTX?</title>
+  <title>Calculadora: Bono FTTX a Mercantil</title>
+  
+  <!-- Icono de pestaña (Misma flecha hacia abajo en SVG) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='22 17 13.5 8.5 8.5 13.5 2 7'/><polyline points='16 17 22 17 22 11'/></svg>">
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Iconos Lucide -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Estilos para eliminar las flechitas del input de número -->
+  <style>
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] { 
+      -moz-appearance: textfield; 
+    }
+  </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
 
@@ -45,12 +61,13 @@
         <input 
           type="number" 
           id="montoBs" 
+          inputmode="decimal"
           placeholder="Ej: 8590.63" 
           step="any"
           class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
           oninput="calcularTodo()"
         >
-        <span class="absolute right-4 top-3 text-slate-500 text-sm font-semibold">Bs.</span>
+        <span class="absolute right-4 top-3 text-slate-500 text-sm font-semibold select-none">Bs.</span>
       </div>
     </div>
 
@@ -120,10 +137,9 @@
     lucide.createIcons();
 
     const TASA_FIJA = 859.0629; // Tasa base del bono FTTX
-    const COMISION = 0.006;    // 0.6% (6 Bs por cada 1000 Bs)
+    const COMISION = 0.006;    // 0.6%
     let tasaBCVActual = 0;
 
-    // Formateadores
     const formatoUSD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
     const formatoBS = new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -153,25 +169,23 @@
         return;
       }
 
-      // 1. Cálculos de Devaluación
+      // Cálculos Devaluación
       const usdOriginal = montoBs / TASA_FIJA;
       const usdActual = montoBs / tasaBCVActual;
       const perdidaUsd = usdOriginal - usdActual;
       const porcentaje = ((perdidaUsd / usdOriginal) * 100);
 
-      // 2. Cálculos Retiro Todoticket -> Mercantil
-      // Redondeamos hacia abajo los céntimos para evitar que rechace por exceder 0.01 Bs
+      // Cálculos Todoticket -> Mercantil (Truncado para evitar centavos de más)
       const maximoRetiro = Math.floor((montoBs / (1 + COMISION)) * 100) / 100;
       const comisionBs = montoBs - maximoRetiro;
       const netoUSD = maximoRetiro / tasaBCVActual;
 
-      // Actualizar DOM Devaluación
+      // Actualizar DOM
       document.getElementById('usdOriginal').innerText = formatoUSD.format(usdOriginal);
       document.getElementById('usdActual').innerText = formatoUSD.format(usdActual);
       document.getElementById('diferenciaUsd').innerText = `-${formatoUSD.format(perdidaUsd)}`;
       document.getElementById('porcentajePerdida').innerText = `Has perdido un ${porcentaje.toFixed(2)}% del poder de compra`;
 
-      // Actualizar DOM Todoticket / Mercantil
       document.getElementById('montoColocar').innerText = `${formatoBS.format(maximoRetiro)} Bs.`;
       document.getElementById('comisionCobrada').innerText = `${formatoBS.format(comisionBs)} Bs.`;
       document.getElementById('netoMercantil').innerText = `${formatoBS.format(maximoRetiro)} Bs.`;
