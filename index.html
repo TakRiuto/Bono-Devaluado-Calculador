@@ -2,10 +2,20 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora: Bono FTTX a Mercantil</title>
-  
-  <!-- Icono de pestaña (Misma flecha hacia abajo en SVG) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>¿Cuánto perdiste de Bono FTTX?</title>
+
+  <!-- Enlace al Manifest (Android/Chrome) -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+
+  <!-- Configuración Exclusiva para iPhone / iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="¿Cuánto perdiste de Bono FTTX?">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <!-- Favicon para navegadores de PC -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='22 17 13.5 8.5 8.5 13.5 2 7'/><polyline points='16 17 22 17 22 11'/></svg>">
 
   <!-- Tailwind CSS -->
@@ -13,8 +23,8 @@
   <!-- Iconos Lucide -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Estilos para eliminar las flechitas del input de número -->
   <style>
+    /* Ocultar botones de flecha en el input numérico */
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none; 
@@ -25,7 +35,7 @@
     }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4 selection:bg-red-500 selection:text-white">
 
   <div class="max-w-md w-full bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-2xl">
     
@@ -88,7 +98,6 @@
           </div>
         </div>
 
-        <!-- Tarjeta Pérdida -->
         <div class="bg-red-950/40 border border-red-500/30 rounded-xl p-3 text-center mt-2">
           <span class="text-xs font-semibold uppercase tracking-wider text-red-400 block mb-0.5">
             Pérdida en Dólares
@@ -136,8 +145,8 @@
   <script>
     lucide.createIcons();
 
-    const TASA_FIJA = 859.0629; // Tasa base del bono FTTX
-    const COMISION = 0.006;    // 0.6%
+    const TASA_FIJA = 859.0629;
+    const COMISION = 0.006;
     let tasaBCVActual = 0;
 
     const formatoUSD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
@@ -169,18 +178,15 @@
         return;
       }
 
-      // Cálculos Devaluación
       const usdOriginal = montoBs / TASA_FIJA;
       const usdActual = montoBs / tasaBCVActual;
       const perdidaUsd = usdOriginal - usdActual;
       const porcentaje = ((perdidaUsd / usdOriginal) * 100);
 
-      // Cálculos Todoticket -> Mercantil (Truncado para evitar centavos de más)
       const maximoRetiro = Math.floor((montoBs / (1 + COMISION)) * 100) / 100;
       const comisionBs = montoBs - maximoRetiro;
       const netoUSD = maximoRetiro / tasaBCVActual;
 
-      // Actualizar DOM
       document.getElementById('usdOriginal').innerText = formatoUSD.format(usdOriginal);
       document.getElementById('usdActual').innerText = formatoUSD.format(usdActual);
       document.getElementById('diferenciaUsd').innerText = `-${formatoUSD.format(perdidaUsd)}`;
@@ -195,6 +201,15 @@
     }
 
     obtenerTasaBCV();
+
+    // REGISTRO DEL SERVICE WORKER (Para permitir instalación PWA)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(() => console.log('PWA Service Worker registrado'))
+          .catch((err) => console.log('Error registrando SW:', err));
+      });
+    }
   </script>
 </body>
 </html>
